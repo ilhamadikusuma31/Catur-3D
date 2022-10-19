@@ -11,6 +11,9 @@ public class PapanCatur : MonoBehaviour
 
     [Header("Bagian Art")] //ngasih nama aja di inspector
     [SerializeField] private Material bahanTile;
+    [SerializeField] private float tileSize = 1.0f;
+    [SerializeField] private float yOffset = 0.2f;
+    [SerializeField] private Vector3 boardCenter = Vector3.zero;
 
 
 
@@ -18,6 +21,7 @@ public class PapanCatur : MonoBehaviour
     private GameObject[,] kotaks;
     private Camera currentCamera;
     private Vector2Int currentHover;
+    private Vector3 batas;
 
 
 
@@ -35,7 +39,7 @@ public class PapanCatur : MonoBehaviour
 
 
         //kalo ada tile yang kena
-        if (Physics.Raycast(r,out ingfo,100,LayerMask.GetMask("tile")))
+        if (Physics.Raycast(r,out ingfo,100,LayerMask.GetMask("tile","hover")))
         {
             //cari idx yang sesuai
             Vector2Int koordinat = cariKoordinat(ingfo.transform.gameObject);
@@ -50,7 +54,7 @@ public class PapanCatur : MonoBehaviour
                 kotaks[koordinat.x, koordinat.y].layer = LayerMask.NameToLayer("hover");
             }
 
-            //ketika salah satu di hover, tile yang sebelumnya diset nama layer kembali menjadi tile
+            //ketika salah satu di hover, tile yang sebelumnya diset nama layernya hover kembali menjadi tile
             if (currentHover != koordinat)
             {
                 kotaks[currentHover.x, currentHover.y].layer = LayerMask.NameToLayer("tile");
@@ -95,6 +99,12 @@ public class PapanCatur : MonoBehaviour
    
     private void MembuatSemuaKotak(float ukuranTile, int ukuranTileX, int ukuranTileY)
     {
+        //seting model chessboard agar mengikuti kotakan yang udah dibuat
+        yOffset += transform.position.y;
+        batas = new Vector3((ukuranTileX / 2) * tileSize, 0, (ukuranTileY / 2) * tileSize)+boardCenter;
+
+
+
         //bikin object baru
         kotaks = new GameObject[ukuranTileX, ukuranTileY];
 
@@ -120,10 +130,10 @@ public class PapanCatur : MonoBehaviour
 
         //kerangka
         Vector3[] sisi = new Vector3[4];
-        sisi[0] = new Vector3(x * ukuranTile, 0, y * ukuranTile);
-        sisi[1] = new Vector3(x * ukuranTile, 0, (y + 1) * ukuranTile);
-        sisi[2] = new Vector3((x + 1) * ukuranTile, 0, y * ukuranTile);
-        sisi[3] = new Vector3((x + 1) * ukuranTile, 0, (y + 1) * ukuranTile);
+        sisi[0] = new Vector3(x * ukuranTile, yOffset, y * ukuranTile)-batas;
+        sisi[1] = new Vector3(x * ukuranTile, yOffset, (y + 1) * ukuranTile)-batas;
+        sisi[2] = new Vector3((x + 1) * ukuranTile, yOffset, y * ukuranTile)-batas;
+        sisi[3] = new Vector3((x + 1) * ukuranTile, yOffset, (y + 1) * ukuranTile)-batas;
         jala.vertices = sisi;
 
 
