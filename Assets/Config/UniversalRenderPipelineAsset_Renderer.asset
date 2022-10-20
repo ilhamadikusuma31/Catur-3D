@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
-  m_Name: hoverRenderObjek
+  m_Name: hover
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    passTag: hoverRenderObjek
-    Event: 300
+    passTag: hover
+    Event: 250
     filterSettings:
-      RenderQueueType: 0
+      RenderQueueType: 1
       LayerMask:
         serializedVersion: 2
         m_Bits: 256
       PassNames: []
     overrideMaterial: {fileID: 2100000, guid: 7572dca55171bab4f8197fe9b5ffdcac, type: 2}
-    overrideMaterialPassIndex: 0
+    overrideMaterialPassIndex: 1
     overrideDepthState: 0
     depthCompareFunction: 4
     enableWrite: 1
