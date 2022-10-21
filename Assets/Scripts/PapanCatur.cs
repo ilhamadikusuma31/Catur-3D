@@ -98,6 +98,7 @@ public class PapanCatur : MonoBehaviour
     {
         MembuatSemuaKotak(tileSize, 8, 8);
         SpawnAllPieces();
+        PositioningAllPieces();
     }
 
    
@@ -162,8 +163,6 @@ public class PapanCatur : MonoBehaviour
 
 
     //generate bidak 
-
-    //semua
     private void SpawnAllPieces()
     {
         int whiteTeam = 0;
@@ -202,10 +201,9 @@ public class PapanCatur : MonoBehaviour
         bidaks[7, 7] = SpawnSinglePiece(TipeBuahCatur.Rook, blackTeam);
         for (int i = 0; i < 8; i++)
         {
-            bidaks[i, 1] = SpawnSinglePiece(TipeBuahCatur.Pawn, whiteTeam);
+            bidaks[i, 6] = SpawnSinglePiece(TipeBuahCatur.Pawn, blackTeam);
         }
     }
-
     private ChessPiece SpawnSinglePiece(TipeBuahCatur c, int tim)
     {
         //mengenereate sesuai indek ke sekian dari array prefabs dan ditaruh di transform parent(PapanCatur.cs)
@@ -213,9 +211,38 @@ public class PapanCatur : MonoBehaviour
         ChessPiece cp = Instantiate(prefabs[(int)c-1], transform).GetComponent<ChessPiece>();
         cp.team = tim;
         cp.tipe = c;
+        cp.GetComponentInChildren<MeshRenderer>().material = teamMaterials[tim];
 
         return cp;
     }
+
+
+    //positioning bidak
+    private void PositioningAllPieces()
+    {
+        for (int i = 0; i < 8; i++)
+            for (int j = 0; j < 8; j++)
+                if (bidaks[i, j] != null)
+                {
+                    PositioningSinglePiece(i, j, true);
+                }
+    }
+
+    private void PositioningSinglePiece(int x, int y, bool force=false)
+    {
+        //bidaks[x, y].currentX = x;
+        //bidaks[x, y].currentY = y;
+        bidaks[x, y].transform.position = GetTileCenter(x,y);
+    }
+
+    private Vector3 GetTileCenter(int x, int y)
+    {
+        return new Vector3(x*tileSize, yOffset, y*tileSize)-batas + new Vector3(tileSize/2,0,tileSize/2);
+    }
+
+
+
+
 }
 
 
