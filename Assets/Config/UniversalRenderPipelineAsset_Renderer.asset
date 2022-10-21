@@ -15,7 +15,7 @@ MonoBehaviour:
   m_Active: 1
   settings:
     passTag: hover
-    Event: 250
+    Event: 500
     filterSettings:
       RenderQueueType: 1
       LayerMask:
@@ -23,7 +23,7 @@ MonoBehaviour:
         m_Bits: 256
       PassNames: []
     overrideMaterial: {fileID: 2100000, guid: 7572dca55171bab4f8197fe9b5ffdcac, type: 2}
-    overrideMaterialPassIndex: 1
+    overrideMaterialPassIndex: 2
     overrideDepthState: 0
     depthCompareFunction: 4
     enableWrite: 1

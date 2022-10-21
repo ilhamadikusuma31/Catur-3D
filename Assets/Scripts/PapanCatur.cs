@@ -15,10 +15,13 @@ public class PapanCatur : MonoBehaviour
     [SerializeField] private float yOffset = 0.2f;
     [SerializeField] private Vector3 boardCenter = Vector3.zero;
 
-
+    [Header("prefabs dan materials")]
+    [SerializeField] private GameObject[] prefabs;
+    [SerializeField] private Material[] teamMaterials;
 
     //logic
     private GameObject[,] kotaks;
+    private ChessPiece[,] bidaks;
     private Camera currentCamera;
     private Vector2Int currentHover;
     private Vector3 batas;
@@ -93,10 +96,13 @@ public class PapanCatur : MonoBehaviour
 
     private void Awake()
     {
-        MembuatSemuaKotak(1, 8, 8);
+        MembuatSemuaKotak(tileSize, 8, 8);
+        SpawnAllPieces();
     }
 
    
+
+    //membuat kotak2 catur
     private void MembuatSemuaKotak(float ukuranTile, int ukuranTileX, int ukuranTileY)
     {
         //seting model chessboard agar mengikuti kotakan yang udah dibuat
@@ -153,4 +159,63 @@ public class PapanCatur : MonoBehaviour
 
         return satukotak;
     }
+
+
+    //generate bidak 
+
+    //semua
+    private void SpawnAllPieces()
+    {
+        int whiteTeam = 0;
+        int blackTeam = 1;
+        bidaks = new ChessPiece[8, 8];
+        //{
+        //  {rook   w  ,pawn w, "", "", "", "", pawn b, rook   b} 
+        //  {kngiht w  ,pawn w, "", "", "", "", pawn b, knight b} 
+        //  {bishop w  ,pawn w, "", "", "", "", pawn b, bishop b} 
+        //  {queen  w  ,pawn w, "", "", "", "", pawn b, queen  b} 
+        //  {king   w  ,pawn w, "", "", "", "", pawn b, king   b} 
+        //  {bishop w  ,pawn w, "", "", "", "", pawn b, bishop b} 
+        //  {knight w  ,pawn w, "", "", "", "", pawn b, knight b} 
+        //  {rook   w  ,pawn w, "", "", "", "", pawn b, rook   b} 
+        //}
+        bidaks[0, 0] = SpawnSinglePiece(TipeBuahCatur.Rook, whiteTeam);
+        bidaks[1, 0] = SpawnSinglePiece(TipeBuahCatur.Knight, whiteTeam);
+        bidaks[2, 0] = SpawnSinglePiece(TipeBuahCatur.Bishop, whiteTeam);
+        bidaks[3, 0] = SpawnSinglePiece(TipeBuahCatur.Queen, whiteTeam);
+        bidaks[4, 0] = SpawnSinglePiece(TipeBuahCatur.King, whiteTeam);
+        bidaks[5, 0] = SpawnSinglePiece(TipeBuahCatur.Bishop, whiteTeam);
+        bidaks[6, 0] = SpawnSinglePiece(TipeBuahCatur.Knight, whiteTeam);
+        bidaks[7, 0] = SpawnSinglePiece(TipeBuahCatur.Rook, whiteTeam);
+        for (int i = 0; i < 8; i++)
+        {
+            bidaks[i, 1] = SpawnSinglePiece(TipeBuahCatur.Pawn, whiteTeam);
+        }
+
+        bidaks[0, 7] = SpawnSinglePiece(TipeBuahCatur.Rook, blackTeam);
+        bidaks[1, 7] = SpawnSinglePiece(TipeBuahCatur.Knight,blackTeam);
+        bidaks[2, 7] = SpawnSinglePiece(TipeBuahCatur.Bishop, blackTeam);
+        bidaks[3, 7] = SpawnSinglePiece(TipeBuahCatur.Queen, blackTeam);
+        bidaks[4, 7] = SpawnSinglePiece(TipeBuahCatur.King, blackTeam);
+        bidaks[5, 7] = SpawnSinglePiece(TipeBuahCatur.Bishop, blackTeam);
+        bidaks[6, 7] = SpawnSinglePiece(TipeBuahCatur.Knight, blackTeam);
+        bidaks[7, 7] = SpawnSinglePiece(TipeBuahCatur.Rook, blackTeam);
+        for (int i = 0; i < 8; i++)
+        {
+            bidaks[i, 1] = SpawnSinglePiece(TipeBuahCatur.Pawn, whiteTeam);
+        }
+    }
+
+    private ChessPiece SpawnSinglePiece(TipeBuahCatur c, int tim)
+    {
+        //mengenereate sesuai indek ke sekian dari array prefabs dan ditaruh di transform parent(PapanCatur.cs)
+        //lalu mengambil skripnya juga agar bisa kita kasih nama
+        ChessPiece cp = Instantiate(prefabs[(int)c-1], transform).GetComponent<ChessPiece>();
+        cp.team = tim;
+        cp.tipe = c;
+
+        return cp;
+    }
 }
+
+
