@@ -22,6 +22,7 @@ public class PapanCatur : MonoBehaviour
     //logic
     private GameObject[,] kotaks;
     private ChessPiece[,] bidaks;
+    private ChessPiece bidakYangDragging;
     private Camera currentCamera;
     private Vector2Int currentHover;
     private Vector3 batas;
@@ -66,6 +67,31 @@ public class PapanCatur : MonoBehaviour
                 currentHover = koordinat;
                 //tile yang kena maka akan diset nama layer hover
                 kotaks[koordinat.x, koordinat.y].layer = LayerMask.NameToLayer("hover");
+            }
+
+            //ketika press down di mouse
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (bidaks[koordinat.x, koordinat.y] != null)
+                {
+                    if (true)
+                    {
+                        bidakYangDragging = bidaks [koordinat.x, koordinat.y];
+                    }
+                }
+            }
+
+            //ketika release mouse
+            if (Input.GetMouseButtonUp(0) && bidakYangDragging !=null)
+            {
+                Vector2Int posisiSebelumnya = new Vector2Int(bidakYangDragging.currentX, bidakYangDragging.currentY);
+
+                bool validMove = MoveTo(bidakYangDragging, koordinat.x, koordinat.y);
+                if (!validMove)
+                {
+                    bidakYangDragging.transform.position = GetTileCenter(posisiSebelumnya.x, posisiSebelumnya.y);
+                    bidakYangDragging = null;
+                }
             }
         }
         else //kalo mouse ngarah keluar chessboard
@@ -162,7 +188,7 @@ public class PapanCatur : MonoBehaviour
     }
 
 
-    //generate bidak 
+    //generate bidak
     private void SpawnAllPieces()
     {
         int whiteTeam = 0;
@@ -230,17 +256,43 @@ public class PapanCatur : MonoBehaviour
 
     private void PositioningSinglePiece(int x, int y, bool force=false)
     {
-        //bidaks[x, y].currentX = x;
-        //bidaks[x, y].currentY = y;
+        bidaks[x, y].currentX = x;
+        bidaks[x, y].currentY = y;
         bidaks[x, y].transform.position = GetTileCenter(x,y);
     }
 
+
+    //fungsi untuk mengepaskan posisi agar lebih presisi
     private Vector3 GetTileCenter(int x, int y)
     {
         return new Vector3(x*tileSize, yOffset, y*tileSize)-batas + new Vector3(tileSize/2,0,tileSize/2);
     }
 
 
+    //bidaks move
+    private bool MoveTo(ChessPiece cp, int x, int y)
+    {
+        Vector2Int posisiSebelumnya = new Vector2Int(cp.currentX,cp.currentY);
+
+        //cek apakah posisi yang mau dipindah sudah ada bidak lain?
+        if (bidaks[x, y] != null)
+        {
+            ChessPiece otherCp = bidaks[x, y];
+            if (cp.team == otherCp.team)
+            {
+                return false;
+            }
+        }
+
+        //pindahkan bidak ke posisi yang dipilih user
+        bidaks[x, y] = cp;
+        bidaks[posisiSebelumnya.x, posisiSebelumnya.y] = null;
+        PositioningSinglePiece(x, y);
+
+        return true;
+
+
+    }
 
 
 }
